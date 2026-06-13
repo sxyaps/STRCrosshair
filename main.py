@@ -14,7 +14,7 @@ def main():
     from crosshair_overlay import CrosshairOverlay
     from settings_window import SettingsWindow
 
-    cfg = ConfigManager()
+    cfg     = ConfigManager()
     overlay = CrosshairOverlay(root, cfg)
 
     _settings = [None]
@@ -29,6 +29,7 @@ def main():
     _tray = [None]
 
     def quit_app():
+        overlay.stop()
         if _tray[0]:
             _tray[0].stop()
         root.after(0, lambda: os._exit(0))
@@ -42,7 +43,7 @@ def main():
     except Exception as e:
         print(f"Tray unavailable: {e}")
 
-    # Global hotkey (optional — requires `keyboard` package)
+    # Global hotkey (requires `keyboard` package)
     try:
         import keyboard
         keyboard.add_hotkey(
