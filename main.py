@@ -1,18 +1,24 @@
-"""STRCrosshair — entry point."""
+"""
+STRCrosshair — entry point.
+
+When frozen with PyInstaller the single .exe serves two roles:
+  - Normal launch  → settings UI + tray (tkinter, main process)
+  - --engine flag  → crosshair overlay (pygame, spawned as subprocess)
+"""
 import os
 import sys
-import threading
-import tkinter as tk
 
 
-def main():
-    root = tk.Tk()
-    root.withdraw()
-    root.title("STRCrosshair")
-
+def _run_settings():
+    import threading
+    import tkinter as tk
     from config_manager import ConfigManager
     from crosshair_overlay import CrosshairOverlay
     from settings_window import SettingsWindow
+
+    root = tk.Tk()
+    root.withdraw()
+    root.title("STRCrosshair")
 
     cfg     = ConfigManager()
     overlay = CrosshairOverlay(root, cfg)
@@ -34,7 +40,6 @@ def main():
             _tray[0].stop()
         root.after(0, lambda: os._exit(0))
 
-    # System tray (background thread)
     try:
         from tray_manager import TrayManager
         t = TrayManager(root, cfg, overlay, show_settings, quit_app)
@@ -43,12 +48,11 @@ def main():
     except Exception as e:
         print(f"Tray unavailable: {e}")
 
-    # Global hotkey (requires `keyboard` package)
     try:
         import keyboard
         keyboard.add_hotkey(
             cfg.config.hotkey,
-            lambda: root.after(0, overlay.toggle_visibility)
+            lambda: root.after(0, overlay.toggle_visibility),
         )
     except Exception as e:
         print(f"Hotkey unavailable: {e}")
@@ -60,4 +64,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if "--engine" in sys.argv:
+        # Subprocess role: run the pygame crosshair engine
+        from crosshair_engine import main as run_engine
+        run_engine()
+    else:
+        _run_settings()
