@@ -2,8 +2,13 @@ name: Build Windows EXE
 
 on:
   push:
-    branches: [main, "claude/**"]
+    branches:
+      - main
+      - "claude/**"
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -13,34 +18,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python 3.11
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: pip
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install pyinstaller
+        run: pip install -r requirements.txt pyinstaller
 
       - name: Generate icon
         run: python create_icon.py
 
-      - name: Build STRCrosshair.exe
-        run: >
-          pyinstaller
-          --onefile
-          --windowed
-          --name STRCrosshair
-          --icon assets/icon.ico
-          --hidden-import pygame
-          --hidden-import pygame._sdl2
-          --hidden-import pystray._win32
-          --hidden-import PIL._tkinter_finder
-          --hidden-import PIL._imaging
-          --hidden-import keyboard
-          main.py
+      - name: Build exe
+        run: |
+          pyinstaller `
+            --onefile `
+            --windowed `
+            --name STRCrosshair `
+            --icon assets/icon.ico `
+            --hidden-import pygame `
+            --hidden-import pygame._sdl2 `
+            --hidden-import pystray._win32 `
+            --hidden-import PIL._tkinter_finder `
+            --hidden-import PIL._imaging `
+            --hidden-import keyboard `
+            main.py
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
