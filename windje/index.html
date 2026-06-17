@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Windje de Meeuw</title>
+  <meta name="description" content="De officiële website van Windje de Meeuw — avonturen, spelletjes, verhalen en meer!" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>🐦</text></svg>" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-brand" onclick="navigate('home')">
+      <span class="nav-brand-dot"></span>
+      Windje
+    </div>
+    <div class="nav-links">
+      <button class="nav-link" data-page="home">Home</button>
+      <button class="nav-link" data-page="shop">Shop</button>
+      <button class="nav-link" data-page="games">Spelletjes</button>
+      <button class="nav-link" data-page="stories">Verhalen</button>
+      <button class="nav-link" data-page="characters">Personages</button>
+    </div>
+  </nav>
+
+  <main id="main"></main>
+
+  <footer class="site-footer">
+    <p>© 2024 Windje de Meeuw · Een creatie van <a href="#" onclick="return false">Brug-Yachtcharter</a> · Voor alle zeeavonturiers 🌊</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
