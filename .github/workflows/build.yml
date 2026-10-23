@@ -1,0 +1,40 @@
+name: Build STRCrosshair.exe
+
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller pystray Pillow keyboard pygame
+
+      - name: Build exe
+        run: |
+          pyinstaller `
+            --onefile `
+            --windowed `
+            --name STRCrosshair `
+            --hidden-import pygame `
+            --hidden-import pystray._win32 `
+            --hidden-import PIL `
+            --hidden-import keyboard `
+            main.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: STRCrosshair-Windows-x64
+          path: dist\STRCrosshair.exe
